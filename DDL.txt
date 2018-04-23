@@ -19,3 +19,88 @@ create table categorias (id bigint primary key auto_increment, descricao varchar
 create table lancamentos(id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,descricao VARCHAR (255) NOT NULL, dt_vencimento DATE NOT NULL, dt_pagamento DATE, valor DECIMAL(10,2) UNSIGNED NOT NULL, observacao TEXT, tipo ENUM('RECEITA','DESPESA') NOT NULL, pessoa_id BIGINT NOT NULL, categoria_id BIGINT NOT NULL, FOREIGN KEY (pessoa_id) REFERENCES pessoas(id), FOREIGN KEY (categoria_id) REFERENCES categorias(id)) Engine=Innodb default charset=utf8;
 ALTER TABLE lancamentos ADD CONSTRAINT fk_lancamentos_pessoas FOREIGN KEY (pessoa_id) REFERENCES pessoas(id) ON CASCADE DELETE;
 ALTER TABLE lancamentos ADD CONSTRAINT fk_lancamentos_categorias FOREIGN KEY (categoria_id) REFERENCES categorias(id);
+alter table contatos drop foreign key contatos_ibfk_1; 
+// apaga a chave estrangeira vida de pessoas
+
+alter table lancamentos drop foreign key fk_pessoa_id; 
+// apaga a chave estrangeira de lancamentos
+
+alter table enderecos drop foreign key enderecos_ibfk_1;
+//apaga a chave estrangeira vinda de pessoas
+
+alter table pessoas modify id bigint not null;
+// mudando o id, para remover o auto increment
+
+alter table pessoas add cpf varchar(11);
+// cria uma coluna cpf na tabela pessoas
+
+// prenchendo abaixo o campo cpf para que n�o seja nulo:
+
+update pessoas set cpf='11111111111' where id =1;
+update pessoas set cpf='22222222222' where id =2;
+update pessoas set cpf='33333333333' where id =3;
+update pessoas set cpf='44444444444' where id =4;
+update pessoas set cpf='55555555555' where id =5;
+update pessoas set cpf='66666666666' where id =6;
+
+select * from pessoas;
+// verifando se foi preenchido corretamente 
+
+alter table contatos add pessoa_cpf varchar(11);
+// add coluna pessoa_cpf a tabela contatos
+
+select * from contatos;
+// verificando..
+
+alter table pessoas modify column cpf varchar(11) not null;
+//n�o aceitar valores null
+
+//  prenchendo abaixo o campo cpf para que n�o seja nulo:
+
+update contatos set pessoa_cpf='11111111111' where id=1;
+update contatos set pessoa_cpf='22222222222' where id=2;
+update contatos set pessoa_cpf='33333333333' where id=3;
+update contatos set pessoa_cpf='44444444444' where id=4;
+
+select * from contatos;
+//verificando..
+
+alter table contatos modify pessoa_cpf varchar(11) not null;
+// n�o aceitar valores null
+
+alter table pessoas add primary key(cpf);
+//tornando cpf uma chave primaria 
+
+alter table contatos add constraint fk_pessoa_cpf foreign key (pessoa_cpf) references pessoas(cpf) on delete cascade on update cascade;
+//chave estrangeira em contatos referenciando o cpf de pessoas
+
+//preenchendo os campos pessoas_cpf na tabela enderecos:
+
+update enderecos set pessoa_cpf='11111111111' where pessoa_id=1;
+update enderecos set pessoa_cpf='22222222222' where pessoa_id=2;
+update enderecos set pessoa_cpf='33333333333' where pessoa_id=3;
+update enderecos set pessoa_cpf='44444444444' where pessoa_id=4;
+
+alter table enderecos modify pessoa_cpf varchar(11) not null;
+// n�o aceite null
+
+alter table enderecos add primary key(pessoa_cpf);
+//torndando pessoa_cpf chave primaria 
+
+alter table enderecos add constraint fk_pessoa_cpf foreign key(pessoa_cpf) references pessoas(cpf) on delete cascade on update cascade;
+// chave estrangeira em enderecos referenciando a tabela pessoas
+
+alter table lancamentos add pessoa_cpf varchar(11) not null;
+// add em lancamentos a coluna pessoa_cpf
+
+update lancamentos set pessoa_cpf='11111111111' where pessoa_id=1;
+// atualizando na tabela lancamentos o cpf 111111111111 para a pessoa cujo o id � 1
+
+alter table contatos add constraint fk_p_cpf foreign key (pessoa_cpf) references pessoas(cpf) on delete cascade on update cascade;
+// Criando chave estrangeira referenciando cpf da tabela pessoas
+
+
+
+
+
+

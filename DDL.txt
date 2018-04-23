@@ -100,6 +100,9 @@ alter table contatos add constraint fk_p_cpf foreign key (pessoa_cpf) references
 // Criando chave estrangeira referenciando cpf da tabela pessoas
 
 
+select descricao, dt_vencimento, valor FROM lancamentos where pessoa_cpf='11111111111';
+// fazendo consulta pelo cpf
+
 
 
 
